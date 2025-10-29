@@ -114,6 +114,7 @@ Person* add_to_end(Person* head) {
 		temp = temp->next;
 	}
 
+	person_to_add->next = temp->next;
 	temp->next = person_to_add;
 	return head;
 }
