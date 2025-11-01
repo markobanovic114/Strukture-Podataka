@@ -2,7 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define FILEPATH "Vjezba3/upis.txt"
+#define FILEPATH_OUT "Vjezba3/upis.txt"
+#define FILEPATH_IN "Vjezba3/ispis.txt"
 
 typedef struct Person* P;
 typedef struct Person {
@@ -22,15 +23,27 @@ P create();
 int find_in_list(P, char*);
 int print_list(P);
 int print_in_file(P);
+int sort_list(P);
 
 int main() {
 	int choice;
-	int status = 0;
+	int status_print = 0;
+	int status_sort = 0;
+	int status_file = 0;
 	char sur[20];
 	P head = NULL;
 	do {
-		printf("Izaberite funkciju (10 za izlaz):\n");
-		printf("1 - Dodaj na pocetak\n"); printf("2 - Dodaj na kraj\n"); printf("3 - Izbrisi iz liste\n"); printf("4 - Pronadi\n"); printf("5 - Ispisi listu\n"); printf("6 - Dodaj iza clana\n"); printf("7 - Dodaj ispred clana\n"); printf("8 - Ispis u datoteku\n"); printf("9 - Upis iz datoteke\n");  scanf("%d", &choice);
+		printf("Izaberite funkciju (0 za izlaz):\n");
+		printf("1 - Dodaj na pocetak\n"); 
+		printf("2 - Dodaj na kraj\n"); 
+		printf("3 - Izbrisi iz liste\n"); 
+		printf("4 - Pronadi\n"); 
+		printf("5 - Ispisi listu\n"); 
+		printf("6 - Dodaj iza clana\n"); 
+		printf("7 - Dodaj ispred clana\n"); 
+		printf("8 - Ispis u datoteku\n"); 
+		printf("9 - Upis iz datoteke\n"); 
+		printf("10 - Sortiranje liste\n"); scanf("%d", &choice);
 
 		switch (choice)
 		{
@@ -53,9 +66,9 @@ int main() {
 			}
 			break;
 		case 5:
-			status = print_list(head);
-			if (status != 0)
-				printf("Doslo je do greske! (kod: %d)\n", status);
+			status_print = print_list(head);
+			if (status_print != 0)
+				printf("Doslo je do greske!\n");
 			break;
 		case 6:
 			printf("Unesite prezime: "); scanf("%19s", sur);
@@ -66,9 +79,9 @@ int main() {
 			head = add_in_front_of(head, sur);
 			break;
 		case 8:
-			status = print_in_file(head);
-			if (status != 0)
-				printf("Doslo je do greske! (kod: %d)\n", status);
+			status_file = print_in_file(head);
+			if (status_file != 0)
+				printf("Doslo je do greske!\n");
 			break;
 		case 9:
 		{
@@ -76,13 +89,19 @@ int main() {
 			break;
 		}
 		case 10:
+			status_sort = sort_list(head);
+			if (!status_sort) {
+				printf("Lista je sortirana.\n");
+			}
+			break;
+		case 0:
 			break;
 		default:
 			printf("Niste unijeli pravilan broj!\n");
 			return 1;
 			break;
 		}
-	} while (choice != 10);
+	} while (choice != 0);
 
 	P temp;
 	while (head != NULL) {
@@ -249,7 +268,7 @@ P add_behind_of(P head, char* surname) {
 }
 
 int print_in_file(P head) {
-	FILE* f1 = fopen("ispis.txt", "w");
+	FILE* f1 = fopen(FILEPATH_IN, "w");
 	if (f1 == NULL) {
 		printf("Greska u otvaranju filea!");
 		return EXIT_FAILURE;
@@ -264,11 +283,11 @@ int print_in_file(P head) {
 	}
 
 	fclose(f1);
-	return 0;
+	return EXIT_SUCCESS;
 }
 
 P read_from_file(P head) {
-	FILE* f1 = fopen(FILEPATH, "r");
+	FILE* f1 = fopen(FILEPATH_OUT, "r");
 	if (f1 == NULL) {
 		printf("Greska u otvaranju filea!\n");
 		return EXIT_FAILURE;
@@ -304,4 +323,50 @@ P read_from_file(P head) {
 
 	fclose(f1);
 	return head;
+}
+
+int sort_list(P head) {
+	if (head == NULL || head->next == NULL) {
+		printf("Nema dovoljno elemenata za sortiranje!\n");
+		return EXIT_FAILURE;
+	}
+
+	int swapped = 1;
+	P prvi;
+	P zadnji = NULL;
+
+	while (swapped) {
+		swapped = 0;
+		prvi = head;
+
+		while (prvi->next != zadnji) {
+			if (strcmp(prvi->surname, prvi->next->surname) > 0) {
+				char temp_name[20], temp_surname[20];
+				int temp_day, temp_month, temp_year;
+
+				strcpy(temp_name, prvi->name);
+				strcpy(temp_surname, prvi->surname);
+				temp_day = prvi->day;
+				temp_month = prvi->month;
+				temp_year = prvi->year;
+
+				strcpy(prvi->name, prvi->next->name);
+				strcpy(prvi->surname, prvi->next->surname);
+				prvi->day = prvi->next->day;
+				prvi->month = prvi->next->month;
+				prvi->year = prvi->next->year;
+
+				strcpy(prvi->next->name, temp_name);
+				strcpy(prvi->next->surname, temp_surname);
+				prvi->next->day = temp_day;
+				prvi->next->month = temp_month;
+				prvi->next->year = temp_year;
+
+				swapped = 1;
+			}
+
+			prvi = prvi->next;
+		}
+	}
+	return EXIT_SUCCESS;
 }
