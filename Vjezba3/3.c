@@ -2,11 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define ERROR_FILE_OPENING -2
-#define ERROR_ALLOCATION NULL
-#define ERROR_GENERIC_STRUCT NULL
-#define ERROR_GENERIC -1
+#define FILEPATH "Vjezba3/upis.txt"
 
+typedef struct Person* P;
 typedef struct Person {
 	char name[20];
 	char surname[20];
@@ -14,22 +12,22 @@ typedef struct Person {
 	struct Person* next;
 }Person;
 
-Person* add_in_front(Person*);
-Person* add_to_end(Person*);
-Person* add_in_front_of(Person*, char*);
-Person* add_behind_of(Person*, char*);
-Person* delete_from_list(Person*, char* surname);
-Person* read_from_file(FILE*, Person*);
-Person* create();
-int find_in_list(Person*, char*);
-int print_list(Person*);
-int print_in_file(Person*);
+P add_in_front(P);
+P add_to_end(P);
+P add_in_front_of(P, char*);
+P add_behind_of(P, char*);
+P delete_from_list(P, char* surname);
+P read_from_file(P);
+P create();
+int find_in_list(P, char*);
+int print_list(P);
+int print_in_file(P);
 
 int main() {
 	int choice;
 	int status = 0;
 	char sur[20];
-	Person* head = NULL;
+	P head = NULL;
 	do {
 		printf("Izaberite funkciju (10 za izlaz):\n");
 		printf("1 - Dodaj na pocetak\n"); printf("2 - Dodaj na kraj\n"); printf("3 - Izbrisi iz liste\n"); printf("4 - Pronadi\n"); printf("5 - Ispisi listu\n"); printf("6 - Dodaj iza clana\n"); printf("7 - Dodaj ispred clana\n"); printf("8 - Ispis u datoteku\n"); printf("9 - Upis iz datoteke\n");  scanf("%d", &choice);
@@ -45,13 +43,13 @@ int main() {
 		case 3:
 			printf("Unesite prezime za izbrisati: "); scanf("%19s", sur);
 			if (delete_from_list(head, sur) == NULL) {
-				return ERROR_GENERIC;
+				return EXIT_FAILURE;
 			}
 			break;
 		case 4:
 			printf("Unesite prezime za pronaci: "); scanf("%19s", sur);
-			if (find_in_list(head, sur) == ERROR_GENERIC) {
-				return ERROR_GENERIC;
+			if (find_in_list(head, sur) == EXIT_FAILURE) {
+				return EXIT_FAILURE;
 			}
 			break;
 		case 5:
@@ -74,13 +72,7 @@ int main() {
 			break;
 		case 9:
 		{
-			FILE* f1 = fopen("Vjezba3/ispis.txt", "r");
-			if (f1 == NULL) {
-				printf("Greska u otvaranju filea!\n");
-				return ERROR_FILE_OPENING;
-			}
-			head = read_from_file(f1, head);
-			fclose(f1);
+			head = read_from_file(head);
 			break;
 		}
 		case 10:
@@ -92,7 +84,7 @@ int main() {
 		}
 	} while (choice != 10);
 
-	Person* temp;
+	P temp;
 	while (head != NULL) {
 		temp = head;
 		head = head->next;
@@ -101,11 +93,11 @@ int main() {
 	return 0;
 }
 
-Person* create() {
-	Person* new_person = (Person*)malloc(sizeof(Person));
+P create() {
+	P new_person = (P)malloc(sizeof(Person));
 	if (new_person == NULL) {
 		printf("Greska u alociranju memorije!\n");
-		return ERROR_ALLOCATION;
+		return EXIT_FAILURE;
 	}
 
 	printf("Unesite ime: ");
@@ -119,8 +111,8 @@ Person* create() {
 	return new_person;
 }
 
-Person* add_in_front(Person* head) {
-	Person* person_to_add = create();
+P add_in_front(P head) {
+	P person_to_add = create();
 	if (person_to_add == NULL) {
 		printf("Greska u stvaranju osobe!\n");
 		return head;
@@ -130,8 +122,8 @@ Person* add_in_front(Person* head) {
 	return person_to_add;
 }
 
-Person* add_to_end(Person* head) {
-	Person* person_to_add = create();
+P add_to_end(P head) {
+	P person_to_add = create();
 	if (person_to_add == NULL) {
 		printf("Greska u stvaranju osobe!\n");
 		return head;
@@ -140,7 +132,7 @@ Person* add_to_end(Person* head) {
 		return person_to_add;
 	}
 
-	Person* temp = head;
+	P temp = head;
 	while (temp->next != NULL) {
 		temp = temp->next;
 	}
@@ -150,12 +142,12 @@ Person* add_to_end(Person* head) {
 	return head;
 }
 
-int print_list(Person* head) {
+int print_list(P head) {
 	if (head == NULL) {
 		printf("Greska! Nema ljudi za ispisati!\n");
-		return 1;
+		return EXIT_FAILURE;
 	}
-	Person* temp = head;
+	P temp = head;
 	printf("%-20s %-20s %-20s\n", "IME", "PREZIME", "GODINA RODENJA");
 	printf("-----------------------------------------------------------------------\n");
 
@@ -164,15 +156,15 @@ int print_list(Person* head) {
 		temp = temp->next;
 	} while (temp != NULL);
 
-	return 0;
+	return EXIT_SUCCESS;
 }
 
-Person* delete_from_list(Person* head, char* surname) {
-	Person* temp = head;
-	Person* previous = NULL;
+P delete_from_list(P head, char* surname) {
+	P temp = head;
+	P previous = NULL;
 	if (head == NULL) {
 		printf("Lista je prazna!\n");
-		return ERROR_GENERIC_STRUCT;
+		return EXIT_FAILURE;
 	}
 
 	while (temp != NULL && strcmp(temp->surname, surname) != 0) {
@@ -196,12 +188,12 @@ Person* delete_from_list(Person* head, char* surname) {
 	return head;
 }
 
-int find_in_list(Person* head, char* surname) {
+int find_in_list(P head, char* surname) {
 	if (head == NULL) {
 		printf("Greska! Nema takve osobe!\n");
-		return ERROR_GENERIC;
+		return EXIT_FAILURE;
 	}
-	Person* temp = head;
+	P temp = head;
 
 	while (temp != NULL) {
 		if (strcmp(temp->surname, surname) == 0) {
@@ -212,16 +204,16 @@ int find_in_list(Person* head, char* surname) {
 	}
 
 	printf("Greska! Nema takve osobe!\n");
-	return ERROR_GENERIC;
+	return EXIT_FAILURE;
 }
 
-Person* add_in_front_of(Person* head, char* surname) {
-	Person* curr = head;
-	Person* prev = NULL;
+P add_in_front_of(P head, char* surname) {
+	P curr = head;
+	P prev = NULL;
 
 	while (curr != NULL) {
 		if (strcmp(curr->surname, surname) == 0) {
-			Person* new_person = create();
+			P new_person = create();
 			if (new_person == NULL) {
 				return head;
 			}
@@ -241,12 +233,12 @@ Person* add_in_front_of(Person* head, char* surname) {
 	return head;
 }
 
-Person* add_behind_of(Person* head, char* surname) {
-	Person* curr = head;
+P add_behind_of(P head, char* surname) {
+	P curr = head;
 
 	while (curr != NULL) {
 		if (strcmp(curr->surname, surname) == 0) {
-			Person* new_person = create();
+			P new_person = create();
 			new_person->next = curr->next;
 			curr->next = new_person;
 		}
@@ -256,14 +248,14 @@ Person* add_behind_of(Person* head, char* surname) {
 	return head;
 }
 
-int print_in_file(Person* head) {
+int print_in_file(P head) {
 	FILE* f1 = fopen("ispis.txt", "w");
 	if (f1 == NULL) {
 		printf("Greska u otvaranju filea!");
-		return ERROR_FILE_OPENING;
+		return EXIT_FAILURE;
 	}
 
-	Person* temp = head;
+	P temp = head;
 	fprintf(f1, "%-20s %-20s %-20s\n", "IME", "PREZIME", "GODINA RODENJA");
 	fprintf(f1, "-----------------------------------------------------------------------\n");
 	while (temp != NULL) {
@@ -275,44 +267,41 @@ int print_in_file(Person* head) {
 	return 0;
 }
 
-Person* read_from_file(FILE* f1, Person* head) {
-	Person* temp = head;
+P read_from_file(P head) {
+	FILE* f1 = fopen(FILEPATH, "r");
+	if (f1 == NULL) {
+		printf("Greska u otvaranju filea!\n");
+		return EXIT_FAILURE;
+	}
+	int read;
+	P temp = head;
 	char buffer[1020];
 	fgets(buffer, 1020, f1);
 	fgets(buffer, 1020, f1);
 
-	if (temp != NULL) {
-		while (temp->next != NULL)
-			temp = temp->next;
-	}
-
 	while (1) {
-		Person* newp = (Person*)malloc(sizeof(Person));
-		if (newp == NULL) {
-			printf("Greska u alokaciji memorije!\n");
-			return head;
+		P new_person = (P)malloc(sizeof(Person));
+		if (new_person == NULL) {
+			printf("Greska u alociranju!\n");
+			return EXIT_FAILURE;
 		}
-
-		int read = fscanf(f1, "%19s %19s %d.%d.%d",
-			newp->name, newp->surname,
-			&newp->day, &newp->month, &newp->year);
-
-		if (read != 5) {
-			free(newp);
+		if ((read = fscanf(f1, "%19s %19s %d.%d.%d", new_person->name, new_person->surname, &new_person->day, &new_person->month, &new_person->year)) != 5) {
+			free(new_person);
 			break;
 		}
+		new_person->next = NULL;
 
-		newp->next = NULL;
+		if (temp == NULL) {
+			head = new_person;
+			temp = new_person;
+			continue;
+		}
 
-		if (head == NULL) {
-			head = newp;
-			temp = newp;
-		}
-		else {
-			temp->next = newp;
-			temp = newp;
-		}
+		new_person->next = temp->next;
+		temp->next = new_person;
+		temp = temp->next;
 	}
 
+	fclose(f1);
 	return head;
 }
