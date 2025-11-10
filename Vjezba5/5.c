@@ -18,7 +18,7 @@ Poly* add(Poly*, int, int);
 char* read_file();
 int read_buffer(Poly**, Poly**, char*);
 void printpoly(Poly*);
-void free_poly(Poly*);
+void freepoly(Poly*);
 
 int main() {
 	Poly* heada = NULL;
@@ -71,10 +71,10 @@ int main() {
 		}
 	} while (choice != 0);
 
-	free_poly(heada);
-	free_poly(headm);
-	free_poly(first);
-	free_poly(second);
+	freepoly(heada);
+	freepoly(headm);
+	freepoly(first);
+	freepoly(second);
 
 	return 0;
 }
@@ -120,6 +120,7 @@ Poly* create(int coeff, int pow) {
 
 	return new_poly;
 }
+
 Poly* add(Poly* head, int coeff, int pow) {
 	Poly* new_poly = create(coeff, pow);
 	if (!new_poly) {
@@ -155,6 +156,7 @@ Poly* add(Poly* head, int coeff, int pow) {
 	new_poly->next = current;
 	return head;
 }
+
 void printpoly(Poly* head) {
 	Poly* temp = head;
 
@@ -166,7 +168,8 @@ void printpoly(Poly* head) {
 		temp = temp->next;
 	}
 }
-void free_poly(Poly* head) {
+
+void freepoly(Poly* head) {
 	Poly* temp;
 	while (head != NULL) {
 		temp = head;
@@ -174,6 +177,7 @@ void free_poly(Poly* head) {
 		free(temp);
 	}
 }
+
 int read_buffer(Poly** first, Poly** second, char* buffer) {
 	int i = 0;
 	int coeff, pow;
@@ -204,6 +208,7 @@ int read_buffer(Poly** first, Poly** second, char* buffer) {
 
 	return EXIT_SUCCESS;
 }
+
 Poly* add_poly(Poly* first, Poly* second, Poly** head) {
 	Poly* temp1 = first;
 	Poly* temp2 = second;
@@ -238,6 +243,7 @@ Poly* add_poly(Poly* first, Poly* second, Poly** head) {
 
 	return *head;
 }
+
 Poly* mult_poly(Poly* first, Poly* second, Poly** head) {
 	Poly* temp1 = first; Poly* temp2 = second;
 	int coeff, pow, found = 0;
