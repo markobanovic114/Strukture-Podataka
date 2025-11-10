@@ -10,6 +10,7 @@ typedef struct Poly {
 	struct Poly* next;
 }Poly;
 
+int read_buffer(Poly**, Poly**, char*);
 void printpoly(Poly*);
 Poly* create(int, int);
 Poly* add(Poly*, int, int);
@@ -20,26 +21,10 @@ int main() {
 	Poly* second = NULL;
 	Poly* first = NULL;
 	char* buffer = read_file();
-	int coeff, pow;
-	int i = 0;
 	printf("%s\n", buffer);
 
-	while (buffer[i] != ' ' && buffer[i] != '\0') {
-		coeff = buffer[i++] - '0';
-		if (buffer[i] == ' ' || buffer[i] == '\0') break;
-		pow = buffer[i++] - '0';
-		first = add(first, coeff, pow);
-	}
-
-	if (buffer[i] == ' ') i++;
-
-	while (buffer[i] != '\0') {
-		coeff = buffer[i++] - '0';
-		if (buffer[i] == '\0') break;
-		pow = buffer[i++] - '0';
-		second = add(second, coeff, pow);
-	}
-
+	read_buffer(&first, &second, buffer);
+	free(buffer);
 	printpoly(first);
 	printf("\n");
 	printpoly(second);
@@ -118,4 +103,28 @@ void printpoly(Poly* head) {
 		printf("%d%d ", temp->coeff, temp->pow);
 		temp = temp->next;
 	}
-} //testna funk
+}
+int read_buffer(Poly** first, Poly** second, char* buffer) {
+	int i = 0;
+	int coeff, pow;
+	Poly** current = first;
+
+	while (buffer[i] != ' ' && buffer[i] != '\0') {
+		coeff = buffer[i++] - '0';
+		if (buffer[i] == ' ' || buffer[i] == '\0') break;
+		pow = buffer[i++] - '0';
+		*current = add(*current, coeff, pow);
+	}
+
+	if (buffer[i] == ' ') i++;
+	current = second;
+
+	while (buffer[i] != '\0') {
+		coeff = buffer[i++] - '0';
+		if (buffer[i] == '\0') break;
+		pow = buffer[i++] - '0';
+		*current = add(*current, coeff, pow);
+	}
+
+	return EXIT_SUCCESS;
+}
