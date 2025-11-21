@@ -32,7 +32,7 @@ int main() {
 	}
 	int choice;
 	if ((read_buffer(&first, &second, buffer)) == 1) {
-		printf("Greska u dodavanju u current!\n");
+		printf("Greske u dodavanju u current!\n");
 		return EXIT_FAILURE;
 	}
 	free(buffer);
