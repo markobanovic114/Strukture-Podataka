@@ -1,0 +1,6 @@
+IME                  PREZIME              GODINA RODENJA      
+-----------------------------------------------------------------------
+Karla                Klaric               04.05.2001
+Ivan                 Matelic              04.05.2000
+Petra                Kovac                09.08.2001
+Marko                Banovic              05.02.2000
