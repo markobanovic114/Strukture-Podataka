@@ -127,7 +127,7 @@ int print_list(Person* head) {
 	}
 	Person* temp = head;
 	printf("%-20s %-20s %-20s\n", "IME", "PREZIME", "GODINA RODENJA");
-	printf("-----------------------------------------------------------------------\n");
+	printf("----------------------------------------------------------------------\n");
 	
 	do {
 		printf("%-20s %-20s %02d.%02d.%04d\n", temp->name, temp->surname, temp->day, temp->month, temp->year);
