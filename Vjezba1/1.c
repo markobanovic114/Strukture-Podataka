@@ -87,7 +87,7 @@ _Student* student_input(char* file, int num_rows) {
 void student_output(_Student* s, int num_rows) {
 	printf("%-20s %-20s %-20s %-10s\n", "Ime", "Prezime", "Bodovi", "Relativni");
 	for (int i = 0; i < num_rows; i++) {
-		printf("%-20s %-20s %-20d %.2f%%\n", s[i].name, s[i].surname, s[i].aps_points, s[i].rel_points);		//ispis podataka
+		printf("%-20s %-20s %-20d %.2f% %\n", s[i].name, s[i].surname, s[i].aps_points, s[i].rel_points);		//ispis podataka
 	}
 }
 
