@@ -27,7 +27,7 @@ int add_to_main(ReceiptMain*, ReceiptMain*);
 int add_receipt(Receipt*, Receipt*);
 char* create_string(char*);
 void print(ReceiptMain*);
-float find(ReceiptMain*, char*, char*, char*);
+double find(ReceiptMain*, char*, char*, char*);
 void free_memory(ReceiptMain*);
 
 
@@ -36,7 +36,7 @@ int main() {
 	if (!headMain) {
 		return EXIT_FAILURE;
 	}
-	int check = 0; float money = 0;
+	int check = 0; double money = 0;
 
 	check = read_main_file(headMain);
 	if (check == 1) {
@@ -257,7 +257,7 @@ char* create_string(char* text) {
 	return string;
 }
 
-float find(ReceiptMain* headM, char* date1, char* date2, char* item) {
+double find(ReceiptMain* headM, char* date1, char* date2, char* item) {
 	float money_spent = 0;
 	ReceiptMain* temp = headM->next;
 
@@ -285,13 +285,16 @@ void free_memory(ReceiptMain* headM) {
 		Receipt* tempR = tempMain->nextReceipt;
 		while (tempR != NULL) {
 			Receipt* nextR = tempR->next;
-			if (tempR->name) free(tempR->name);
+			if (tempR->name) {
+				free(tempR->name);
+			}
 			free(tempR);
 			tempR = nextR;
 		}
 
-		if (tempMain->date) free(tempMain->date);
-
+		if (tempMain->date) {
+			free(tempMain->date);
+		}
 		free(tempMain);
 		tempMain = nextMain;
 	}
