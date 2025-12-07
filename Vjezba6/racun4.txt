@@ -1,0 +1,6 @@
+2021-09-01
+Jabuka 5 1.50
+Banana 6 1.20
+Naranca 4 2.00
+Jogurt 2 3.40
+Kobasica 3 1.5
